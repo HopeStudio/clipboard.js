@@ -24,14 +24,14 @@
     ```
     按钮的 `data-clipboard-target` 指定需要复制/剪切内容所在的元素 id，`data-clipboard-action` 指定采取何种操作：`copy`, `cut`。
 
-3. 在页面加载完毕后进行 Clipboard 初始化
+3. 在页面加载完毕后进行 Clipboard 初始化，一次性为同一类名的按钮添加点击-赋值/剪切的功能。
     ```javascript
     Clipboard.init('clipboard-btn');
     ```
     `Clipboard.init()` 接收一个类名，会对这个类名的所有元素的点击事件（委托在 window 上）进行监听，执行复制/剪切操作。
     现在你逐个点击按钮，点击后试着粘贴到某处，看一下效果。
 
-4. 当然你也可以单独为某个按钮（当然按钮元素必须是有 2 中的 `data` 属性的）添加点击-复制/剪切的功能
+4. 你也可以单独为某个按钮（当然按钮元素必须是有 2 中的 `data` 属性的）添加点击-复制/剪切的功能
     ```javascript
     // 传入选择器字符串
     var clipboard = new Clipboard('queryStr');
