@@ -1,0 +1,6 @@
+.idea
+*.log
+tmp
+temp
+bower_components
+node_modules

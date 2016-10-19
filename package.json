@@ -1,0 +1,60 @@
+{
+  "name": "clipboard",
+  "version": "0.0.1",
+  "description": "点击-复制（剪切）功能的轻量实现",
+  "main": "index.js",
+  "jsnext:main": "dist/clipboard.es.js",
+  "scripts": {
+    "lint": "eslint src --fix",
+    "clean:node": "rm -rf index.js lib",
+    "clean:browser": "rm -rf dist",
+    "clean": "npm run clean:node && npm run clean:browser",
+    "minify": "uglifyjs dist/clipboard.js -o dist/clipboard.min.js  --compress --mangle --comments '/Copyright/'",
+    "prebuild": "npm run lint",
+    "build:browser": "rollup -c && npm run minify",
+    "build:node": "babel src -d .",
+    "build": "npm run build:browser && npm run build:node",
+    "pretest": "npm run lint && npm run build",
+    "test": "mocha --reporter spec",
+    "coveralls": "istanbul cover _mocha --report lcovonly -x dist/utils.js -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yangfch3/clipboard.js.git"
+  },
+  "keywords": [
+    "clipboard",
+    "clipboard-js"
+  ],
+  "author": "yangfch3",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yangfch3/clipboard.js/issues"
+  },
+  "homepage": "https://github.com/yangfch3/clipboard.js#readme",
+  "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-es2015-rollup": "^1.2.0",
+    "chai": "^3.5.0",
+    "coveralls": "^2.11.9",
+    "eslint": "^3.6.0",
+    "eslint-config-standard": "^6.2.0",
+    "eslint-plugin-import": "^1.16.0",
+    "eslint-plugin-promise": "^3.3.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.0.2",
+    "rollup": "^0.36.0",
+    "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-commonjs": "^5.0.5",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-watch": "^2.5.0",
+    "uglify-js": "^2.7.3"
+  },
+  "dependencies": {
+    "debug": "^2.2.0"
+  }
+}
