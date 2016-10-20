@@ -1,6 +1,6 @@
 /*
  Rollup.js v0.0.1
- Thu Oct 20 2016 01:57:21 GMT+0800 (CST)
+ Thu Oct 20 2016 16:27:22 GMT+0800 (CST)
 
  https://github.com/yangfch3/clipboard.js
 
@@ -15,6 +15,100 @@ function contain(arr, item) {
 function isString(input) {
     return typeof input === 'string';
 }
+
+function isUndefined(input) {
+    return input === undefined;
+}
+
+function isArray(input) {
+    return Array.isArray(input);
+}
+
+function inheritPrototype(subType, superType) {
+    function F() {}
+    F.prototype = superType.prototype;
+    var middleObj = new F();
+    middleObj.constructor = subType;
+    subType.prototype = middleObj;
+}
+
+function Publisher() {
+    this.subscribers = {};
+}
+
+Publisher.prototype = {
+    constructor: Publisher,
+
+    subscribe: function subscribe(notification, subscriber) {
+        if (isUndefined(this.subscribers[notification])) {
+            this.subscribers[notification] = [];
+        }
+
+        if (isArray(subscriber)) {
+            for (var i = 0, len = subscriber.length; i < len; i++) {
+                this.subscribers[notification].push(subscriber[i]);
+            }
+            return;
+        }
+        this.subscribers[notification].push(subscriber);
+        return this;
+    },
+
+    on: function on(notification, subscriber) {
+        return this.subscribe(notification, subscriber);
+    },
+
+    notify: function notify(notification, e) {
+        if (isArray(this.subscribers[notification])) {
+            var subscriberGroup = this.subscribers[notification];
+            for (var i = 0, len = subscriberGroup.length; i < len; i++) {
+                subscriberGroup[i](e, notification);
+            }
+        }
+        return this;
+    },
+
+    dispatch: function dispatch(notification, e) {
+        return this.notify(notification, e);
+    },
+
+    unsubscribe: function unsubscribe(notification, subscriber) {
+        if (isArray(this.subscribers[notification])) {
+            var subscriberGroup = this.subscribers[notification];
+            if (isArray(subscriber)) {
+                for (var i = 0, len = subscriberGroup.length; i < len; i++) {
+                    for (var j = 0, _len = subscriber.length; j < _len; j++) {
+                        if (subscriberGroup[i] === subscriber[j]) {
+                            subscriberGroup.splice(i, 1);
+                        }
+                    }
+                }
+            } else {
+                for (var k = 0, _len2 = subscriberGroup.length; k < _len2; k++) {
+                    if (subscriberGroup[k] === subscriber) {
+                        subscriberGroup.splice(k, 1);
+                    }
+                }
+            }
+        }
+
+        return this;
+    },
+
+    cacel: function cacel(notification, subscriber) {
+        return this.unsubscribe(notification, subscriber);
+    }
+};
+
+var fakeInput = document.createElement('input');
+fakeInput.id = 'fakeInput';
+fakeInput.type = 'text';
+fakeInput.value = ' ';
+fakeInput.style.position = 'absolute';
+fakeInput.style.left = '-9999px';
+fakeInput.style.width = '1px';
+fakeInput.style.height = '1px';
+document.body.appendChild(fakeInput);
 
 var asyncGenerator = function () {
   function AwaitValue(value) {
@@ -230,46 +324,80 @@ var toConsumableArray = function (arr) {
   }
 };
 
-{
-    /* eslint-disable no-console */
-    console.log('production');
-    /* eslint-enable no-console */
-}
+// 环境分支示例代码
+// if ("production" === 'production') {
+//     /* eslint-disable no-console */
+//     console.log('production');
+//     /* eslint-enable no-console */
+// } else {
+//     /* eslint-disable no-console */
+//     console.log('not production');
+//     /* eslint-enable no-console */
+// }
 
 var VERSION = '0.0.1';
 
 var _clipboardList = [];
 var _triggers = [];
 
-var fakeInput = document.createElement('input');
-fakeInput.id = 'fakeInput';
-fakeInput.type = 'text';
-fakeInput.value = ' ';
-fakeInput.style.position = 'absolute';
-fakeInput.style.left = '-9999px';
-fakeInput.style.width = '1px';
-fakeInput.style.height = '1px';
-document.body.appendChild(fakeInput);
+inheritPrototype(Clipboard, Publisher);
 
 function exec(e) {
     if (contain(_triggers, e.target)) {
-        var clipboard = _clipboardList[_triggers.indexOf(e.target)];
-        if (clipboard.type === 1) {
-            clipboard.target.select();
-            document.execCommand(clipboard.action);
-            clipboard.target.blur();
-        } else if (clipboard.type === 2) {
-            var text = clipboard.target.innerText;
-            fakeInput.value = text;
-            fakeInput.select();
-            document.execCommand(clipboard.action);
-            fakeInput.blur();
-        }
+        (function () {
+            var clipboard = _clipboardList[_triggers.indexOf(e.target)];
+            var prop = clipboard.trigger.innerHTML ? 'innerHTML' : 'value';
+            var originalText = clipboard.trigger[prop];
+
+            if (clipboard.type === 1) {
+                clipboard.target.select();
+                try {
+                    document.execCommand(clipboard.action);
+                    clipboard.target.blur();
+                    clipboard.notify('success', clipboard);
+                    clipboard.trigger[prop] = '✔️';
+                    clipboard.trigger.disabled = true;
+                    setTimeout(function () {
+                        clipboard.trigger[prop] = originalText;
+                        clipboard.trigger.disabled = false;
+                    }, 1500);
+                } catch (e) {
+                    clipboard.notify('error', clipboard);
+                }
+            } else if (clipboard.type === 2) {
+                var text = clipboard.target.innerHTML;
+                fakeInput.value = text;
+                fakeInput.select();
+                try {
+                    document.execCommand(clipboard.action);
+                    fakeInput.blur();
+                    clipboard.notify('success', clipboard);
+                    clipboard.trigger[prop] = '✔️';
+                    clipboard.trigger.disabled = true;
+                    setTimeout(function () {
+                        clipboard.trigger[prop] = originalText;
+                        clipboard.trigger.disabled = false;
+                    }, 1500);
+                } catch (e) {
+                    fakeInput.blur();
+                    alert('error');
+                    clipboard.notify('error', clipboard);
+                }
+            }
+        })();
     }
 }
 
 function Clipboard(ele) {
+    // 实现继承
+    Publisher.call(this);
+
     var trigger = isString(ele) ? document.querySelector(ele) : ele;
+
+    // 按钮已注册过时
+    if (trigger.dataset['registered']) {
+        return _clipboardList[_triggers.indexOf(trigger)];
+    }
     var target = document.querySelector(trigger.dataset['clipboardTarget']);
     var action = void 0,
         type = void 0;
@@ -289,6 +417,10 @@ function Clipboard(ele) {
 
     _clipboardList.push(this);
     _triggers.push(trigger);
+
+    trigger.dataset['registered'] = true;
+
+    return this;
 }
 
 Clipboard.ver = Clipboard.version = VERSION;
@@ -303,8 +435,6 @@ Clipboard.init = function (className) {
     }
     return _clipboardList;
 };
-
-// [TODO] on 复制成功或失败采取的操作
 
 Clipboard.prototype.destroy = function () {
     var that = this;

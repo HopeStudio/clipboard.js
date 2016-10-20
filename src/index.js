@@ -1,49 +1,79 @@
-import { isString, contain } from './lib/utils';
+import { isString, contain, inheritPrototype } from './lib/utils';
+import Publisher from './lib/observer';
+import fakeInput from './lib/fakeInput';
 
-if (process.env.NODE_ENV === 'production') {
-    /* eslint-disable no-console */
-    console.log('production');
-    /* eslint-enable no-console */
-} else {
-    /* eslint-disable no-console */
-    console.log('not production');
-    /* eslint-enable no-console */
-}
+// 环境分支示例代码
+// if (process.env.NODE_ENV === 'production') {
+//     /* eslint-disable no-console */
+//     console.log('production');
+//     /* eslint-enable no-console */
+// } else {
+//     /* eslint-disable no-console */
+//     console.log('not production');
+//     /* eslint-enable no-console */
+// }
 
 const VERSION = '<@VERSION@>';
 
 let _clipboardList = [];
 let _triggers = [];
 
-let fakeInput = document.createElement('input');
-fakeInput.id = 'fakeInput';
-fakeInput.type = 'text';
-fakeInput.value = ' ';
-fakeInput.style.position = 'absolute';
-fakeInput.style.left = '-9999px';
-fakeInput.style.width = '1px';
-fakeInput.style.height = '1px';
-document.body.appendChild(fakeInput);
+inheritPrototype(Clipboard, Publisher);
 
-function exec (e) {
+function exec(e) {
     if (contain(_triggers, e.target)) {
         let clipboard = _clipboardList[_triggers.indexOf(e.target)];
+        let prop = clipboard.trigger.innerHTML ? 'innerHTML' : 'value';
+        let originalText = clipboard.trigger[prop];
+
         if (clipboard.type === 1) {
             clipboard.target.select();
-            document.execCommand(clipboard.action);
-            clipboard.target.blur();
+            try {
+                document.execCommand(clipboard.action);
+                clipboard.target.blur();
+                clipboard.notify('success', clipboard);
+                clipboard.trigger[prop] = '✔️';
+                clipboard.trigger.disabled = true;
+                setTimeout(function () {
+                    clipboard.trigger[prop] = originalText;
+                    clipboard.trigger.disabled = false;
+                }, 1500);
+            } catch (e) {
+                clipboard.notify('error', clipboard);
+            }
         } else if (clipboard.type === 2) {
-            let text = clipboard.target.innerText;
+            let text = clipboard.target.innerHTML;
             fakeInput.value = text;
             fakeInput.select();
-            document.execCommand(clipboard.action);
-            fakeInput.blur();
+            try {
+                document.execCommand(clipboard.action);
+                fakeInput.blur();
+                clipboard.notify('success', clipboard);
+                clipboard.trigger[prop] = '✔️';
+                clipboard.trigger.disabled = true;
+                setTimeout(function () {
+                    clipboard.trigger[prop] = originalText;
+                    clipboard.trigger.disabled = false;
+                }, 1500);
+            } catch (e) {
+                fakeInput.blur();
+                alert('error');
+                clipboard.notify('error', clipboard);
+            }
         }
     }
 }
 
-function Clipboard (ele) {
+function Clipboard(ele) {
+    // 实现继承
+    Publisher.call(this);
+
     let trigger = isString(ele) ? document.querySelector(ele) : ele;
+
+    // 按钮已注册过时
+    if (trigger.dataset['registered']) {
+        return _clipboardList[_triggers.indexOf(trigger)];
+    }
     let target = document.querySelector(trigger.dataset['clipboardTarget']);
     let action, type;
 
@@ -62,6 +92,10 @@ function Clipboard (ele) {
 
     _clipboardList.push(this);
     _triggers.push(trigger);
+
+    trigger.dataset['registered'] = true;
+
+    return this;
 }
 
 Clipboard.ver = Clipboard.version = VERSION;
@@ -76,8 +110,6 @@ Clipboard.init = function (className) {
     }
     return _clipboardList;
 };
-
-// [TODO] on 复制成功或失败采取的操作
 
 Clipboard.prototype.destroy = function () {
     let that = this;

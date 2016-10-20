@@ -26,10 +26,10 @@
 
 3. 在页面加载完毕后进行 Clipboard 初始化，一次性为同一类名的按钮添加点击-赋值/剪切的功能。
     ```javascript
-    Clipboard.init('clipboard-btn');
+    var clipboardList = Clipboard.init('clipboard-btn');
+    // 同时 clipboardList 指向我们所有 clipboard 对象的数组，会动态更新
     ```
-    `Clipboard.init()` 接收一个类名，会对这个类名的所有元素的点击事件（委托在 window 上）进行监听，执行复制/剪切操作。
-    现在你逐个点击按钮，点击后试着粘贴到某处，看一下效果。
+    `Clipboard.init()` 接收一个类名，这样就为所有该类名的 DOM 绑定了点击事件。
 
 4. 你也可以单独为某个按钮（当然按钮元素必须是有 2 中的 `data` 属性的）添加点击-复制/剪切的功能
     ```javascript
@@ -40,10 +40,19 @@
     var clipboard = new Clipboard(ele);
     ```
 
-5. 停止某个按钮的点击-复制/剪切功能
+5. 你可以对 `clipboard` 对象使用观察者模式，现支持两种事件：`success` 和 `error`
+    ```javascript
+    var callback = function(e) {
+       console.error(e.action);
+       console.error(e.trigger);
+       console.error(e.target);
+    };
+ 
+    clipboard.on('success', callback);
+    
+    ```
+    回调函数（callback）会自动传入两个参数：`clipboard` 对象与事件字符串（`success` 与 `error`）。
+6. 停止某个按钮的点击-复制/剪切功能
     ```
     clipboard.destroy();
     ```
-
-## TODO
-- [ ] 为 `clipboard` 添加订阅发布机制，支持复制/剪切成功事件的发布与处理。
