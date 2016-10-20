@@ -29,7 +29,7 @@
     var clipboardList = Clipboard.init('clipboard-btn');
     // 同时 clipboardList 指向我们所有 clipboard 对象的数组，会动态更新
     ```
-    `Clipboard.init()` 接收一个类名，这样就为所有该类名的 DOM 绑定了点击事件。
+    `Clipboard.init()` 接收一个类名，这样就为所有该类名的 DOM 绑定了点击事件（采用事件委托，无需担心性能）。
 
 4. 你也可以单独为某个按钮（当然按钮元素必须是有 2 中的 `data` 属性的）添加点击-复制/剪切的功能
     ```javascript
@@ -48,11 +48,14 @@
        console.error(e.target);
     };
  
+    // 使用 clipboard 对象的 on 或 subscribe 方法注册事件订阅者
     clipboard.on('success', callback);
-    
+ 
+    // 使用 clipboard 对象的 calcel 或 unsubscribe 方法来取消注册订阅
     ```
     回调函数（callback）会自动传入两个参数：`clipboard` 对象与事件字符串（`success` 与 `error`）。
-6. 停止某个按钮的点击-复制/剪切功能
+
+6. 销毁某个按钮的点击-复制/剪切功能
     ```
     clipboard.destroy();
     ```
