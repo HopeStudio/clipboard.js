@@ -59,3 +59,5 @@
     ```
     clipboard.destroy();
     ```
+
+深入了解，请去往[wiki](https://github.com/yangfch3/clipboard.js/wiki)。
