@@ -1,6 +1,10 @@
 # Clipboard.js
 
-一个实现常用的点击后复制/剪切功能的轻量库，不依赖 Flash！
+> 一个实现常用的 点击-复制/剪切 功能的轻量库，不依赖 Flash。
+
+[![Build Status](https://travis-ci.org/yangfch3/clipboard.js.svg?branch=master)](https://travis-ci.org/yangfch3/clipboard.js)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://opensource.org/licenses/MIT "Feel free to contribute.")
+
 
 ## 用法
 1. 引入 `clipboard.js`

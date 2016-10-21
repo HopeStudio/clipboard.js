@@ -3,11 +3,10 @@ cache:
   directories:
     - node_modules
 node_js:
-  - "6"
-  - "stable"
-  - "node"
+  - 6
+  - 5
+  - stable
 before_script:
   - npm run clean
 script:
-  - npm run lint
   - npm run build
