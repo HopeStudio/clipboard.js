@@ -2,6 +2,8 @@ language: node_js
 cache:
   directories:
     - node_modules
+notifications:      # 每次构建的时候是否通知，如果不想收到通知邮箱（个人感觉邮件贼烦），那就设置false吧
+  email: false
 node_js:
   - 6
   - 5
@@ -10,3 +12,4 @@ before_script:
   - npm run clean
 script:
   - npm run build
+
