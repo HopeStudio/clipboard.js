@@ -1,6 +1,6 @@
 /*
  Rollup.js v0.0.1
- Thu Oct 20 2016 16:27:22 GMT+0800 (CST)
+ Fri Oct 21 2016 22:48:31 GMT+0800 (CST)
 
  https://github.com/yangfch3/clipboard.js
 
@@ -329,7 +329,7 @@
   };
 
   // 环境分支示例代码
-  // if ("production" === 'production') {
+  // if ("development" === 'production') {
   //     /* eslint-disable no-console */
   //     console.log('production');
   //     /* eslint-enable no-console */
@@ -359,7 +359,7 @@
                       document.execCommand(clipboard.action);
                       clipboard.target.blur();
                       clipboard.notify('success', clipboard);
-                      clipboard.trigger[prop] = '✔️';
+                      clipboard.trigger[prop] = 'OK!️';
                       clipboard.trigger.disabled = true;
                       setTimeout(function () {
                           clipboard.trigger[prop] = originalText;
@@ -376,7 +376,7 @@
                       document.execCommand(clipboard.action);
                       fakeInput.blur();
                       clipboard.notify('success', clipboard);
-                      clipboard.trigger[prop] = '✔️';
+                      clipboard.trigger[prop] = 'OK!️';
                       clipboard.trigger.disabled = true;
                       setTimeout(function () {
                           clipboard.trigger[prop] = originalText;

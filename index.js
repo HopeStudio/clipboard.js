@@ -49,7 +49,7 @@ function exec(e) {
                     document.execCommand(clipboard.action);
                     clipboard.target.blur();
                     clipboard.notify('success', clipboard);
-                    clipboard.trigger[prop] = '✔️';
+                    clipboard.trigger[prop] = 'OK!️';
                     clipboard.trigger.disabled = true;
                     setTimeout(function () {
                         clipboard.trigger[prop] = originalText;
@@ -66,7 +66,7 @@ function exec(e) {
                     document.execCommand(clipboard.action);
                     _fakeInput2.default.blur();
                     clipboard.notify('success', clipboard);
-                    clipboard.trigger[prop] = '✔️';
+                    clipboard.trigger[prop] = 'OK!️';
                     clipboard.trigger.disabled = true;
                     setTimeout(function () {
                         clipboard.trigger[prop] = originalText;
