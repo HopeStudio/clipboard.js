@@ -14,6 +14,17 @@ export function isArray(input) {
     return Array.isArray(input);
 }
 
+export function toArray(obj, offset) {
+    offset = offset >= 0 ? offset : 0;
+    if (Array.from) {
+        // Array.from: convert an obj or an array-like obj to an array
+        return Array.prototype.slice.call(Array.from(obj), offset);
+    }
+
+    return Array.prototype.slice.call(obj, offset);
+}
+
+
 export function inheritPrototype(subType, superType) {
     function F() {}
     F.prototype = superType.prototype;

@@ -1,6 +1,6 @@
 /*
  Rollup.js v0.0.1
- Fri Oct 21 2016 22:48:31 GMT+0800 (CST)
+ Sat Nov 05 2016 10:48:33 GMT+0800 (CST)
 
  https://github.com/yangfch3/clipboard.js
 
@@ -28,6 +28,8 @@
       return Array.isArray(input);
   }
 
+
+
   function inheritPrototype(subType, superType) {
       function F() {}
       F.prototype = superType.prototype;
@@ -36,49 +38,71 @@
       subType.prototype = middleObj;
   }
 
-  function Publisher() {
-      this.subscribers = {};
+  function Observer(obj) {
+      // 作用域安全的构造函数
+      if (this instanceof Observer) {
+          if (!isUndefined(obj)) {
+              for (var prop in obj) {
+                  if (obj.hasOwnProperty(prop)) {
+                      this[prop] = obj[prop];
+                  }
+              }
+          }
+          this.subscribers = {};
+          return this;
+      }
+      return new Observer(obj);
+
+      /**
+       * subscribers {
+           *     eventNotificationA: [subscriber01, subscriber02, ...],
+           *     eventNotificationB: [subscriber11, subscriber12, ...],
+           *     ...
+           * }
+       *
+       * 一般 eventNotification 为字符串类型，subscriber 订阅者为函数
+       */
   }
 
-  Publisher.prototype = {
-      constructor: Publisher,
+  Observer.prototype = {
+      constructor: Observer,
 
-      subscribe: function subscribe(notification, subscriber) {
-          if (isUndefined(this.subscribers[notification])) {
-              this.subscribers[notification] = [];
+      subscribe: function subscribe(eventNotification, subscriber) {
+          if (isUndefined(this.subscribers[eventNotification])) {
+              this.subscribers[eventNotification] = [];
           }
 
           if (isArray(subscriber)) {
               for (var i = 0, len = subscriber.length; i < len; i++) {
-                  this.subscribers[notification].push(subscriber[i]);
+                  this.subscribers[eventNotification].push(subscriber[i]);
               }
               return;
           }
-          this.subscribers[notification].push(subscriber);
+          this.subscribers[eventNotification].push(subscriber);
           return this;
       },
 
-      on: function on(notification, subscriber) {
-          return this.subscribe(notification, subscriber);
+      on: function on(eventNotification, subscriber) {
+          return this.subscribe(eventNotification, subscriber);
       },
 
-      notify: function notify(notification, e) {
-          if (isArray(this.subscribers[notification])) {
-              var subscriberGroup = this.subscribers[notification];
+      notify: function notify(eventNotification, e) {
+          if (isArray(this.subscribers[eventNotification])) {
+              var subscriberGroup = this.subscribers[eventNotification];
               for (var i = 0, len = subscriberGroup.length; i < len; i++) {
-                  subscriberGroup[i](e, notification);
+                  subscriberGroup[i](e, eventNotification);
               }
           }
           return this;
       },
 
-      dispatch: function dispatch(notification, e) {
-          return this.notify(notification, e);
+      dispatch: function dispatch(eventNotification, e) {
+          return this.notify(eventNotification, e);
       },
 
-      unsubscribe: function unsubscribe(notification, subscriber) {
-          if (isArray(this.subscribers[notification])) {
-              var subscriberGroup = this.subscribers[notification];
+      unsubscribe: function unsubscribe(eventNotification, subscriber) {
+          if (isArray(this.subscribers[eventNotification])) {
+              var subscriberGroup = this.subscribers[eventNotification];
               if (isArray(subscriber)) {
                   for (var i = 0, len = subscriberGroup.length; i < len; i++) {
                       for (var j = 0, _len = subscriber.length; j < _len; j++) {
@@ -99,8 +123,8 @@
           return this;
       },
 
-      cacel: function cacel(notification, subscriber) {
-          return this.unsubscribe(notification, subscriber);
+      cacel: function cacel(eventNotification, subscriber) {
+          return this.unsubscribe(eventNotification, subscriber);
       }
   };
 
@@ -344,7 +368,7 @@
   var _clipboardList = [];
   var _triggers = [];
 
-  inheritPrototype(Clipboard, Publisher);
+  inheritPrototype(Clipboard, Observer);
 
   function exec(e) {
       if (contain(_triggers, e.target)) {
@@ -394,7 +418,7 @@
 
   function Clipboard(ele) {
       // 实现继承
-      Publisher.call(this);
+      Observer.call(this);
 
       var trigger = isString(ele) ? document.querySelector(ele) : ele;
 

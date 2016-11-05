@@ -1,48 +1,70 @@
 import { isUndefined, isArray } from './utils';
 
-function Publisher() {
-    this.subscribers = {};
+function Observer(obj) {
+    // 作用域安全的构造函数
+    if (this instanceof Observer) {
+        if (!isUndefined(obj)) {
+            for (var prop in obj) {
+                if (obj.hasOwnProperty(prop)) {
+                    this[prop] = obj[prop];
+                }
+            }
+        }
+        this.subscribers = {};
+        return this;
+    }
+    return new Observer(obj);
+
+    /**
+     * subscribers {
+         *     eventNotificationA: [subscriber01, subscriber02, ...],
+         *     eventNotificationB: [subscriber11, subscriber12, ...],
+         *     ...
+         * }
+     *
+     * 一般 eventNotification 为字符串类型，subscriber 订阅者为函数
+     */
 }
 
-Publisher.prototype = {
-    constructor: Publisher,
+Observer.prototype = {
+    constructor: Observer,
 
-    subscribe: function(notification, subscriber) {
-        if (isUndefined(this.subscribers[notification])) {
-            this.subscribers[notification] = [];
+    subscribe: function(eventNotification, subscriber) {
+        if (isUndefined(this.subscribers[eventNotification])) {
+            this.subscribers[eventNotification] = [];
         }
 
         if (isArray(subscriber)) {
             for (let i = 0, len = subscriber.length; i < len; i++) {
-                this.subscribers[notification].push(subscriber[i]);
+                this.subscribers[eventNotification].push(subscriber[i]);
             }
             return;
         }
-        this.subscribers[notification].push(subscriber);
+        this.subscribers[eventNotification].push(subscriber);
         return this;
     },
 
-    on: function(notification, subscriber) {
-        return this.subscribe(notification, subscriber);
+    on: function(eventNotification, subscriber) {
+        return this.subscribe(eventNotification, subscriber);
     },
 
-    notify: function(notification, e) {
-        if(isArray(this.subscribers[notification])) {
-            let subscriberGroup = this.subscribers[notification];
+    notify: function(eventNotification, e) {
+        if(isArray(this.subscribers[eventNotification])) {
+            let subscriberGroup = this.subscribers[eventNotification];
             for(let i = 0, len = subscriberGroup.length; i < len; i++) {
-                subscriberGroup[i](e, notification);
+                subscriberGroup[i](e, eventNotification);
             }
         }
         return this;
     },
 
-    dispatch: function(notification, e) {
-        return this.notify(notification, e);
+    dispatch: function(eventNotification, e) {
+        return this.notify(eventNotification, e);
     },
 
-    unsubscribe: function(notification, subscriber) {
-        if(isArray(this.subscribers[notification])) {
-            let subscriberGroup = this.subscribers[notification];
+    unsubscribe: function(eventNotification, subscriber) {
+        if(isArray(this.subscribers[eventNotification])) {
+            let subscriberGroup = this.subscribers[eventNotification];
             if (isArray(subscriber)) {
                 for(let i = 0, len = subscriberGroup.length; i < len; i++) {
                     for (let j = 0, len = subscriber.length; j < len; j++) {
@@ -64,9 +86,9 @@ Publisher.prototype = {
         return this;
     },
 
-    cacel: function(notification, subscriber) {
-        return this.unsubscribe(notification, subscriber);
+    cacel: function(eventNotification, subscriber) {
+        return this.unsubscribe(eventNotification, subscriber);
     }
 };
 
-export default Publisher;
+export default Observer;
