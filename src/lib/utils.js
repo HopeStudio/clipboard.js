@@ -53,32 +53,21 @@ function hyphenate(str) {
 
 
 export function getData(element, name) {
-    if (name) {
-        if (element.dataset) {
-            return element.dataset[name];
-        }
-        return element.getAttribute(name);
-    }
     if (element.dataset) {
-        return element.dataset;
-    }
-    let temp = {};
-    for (let i = 0, len = element.attributes.length; i < len; i += 1) {
-        if (element.attributes[i].nodeName.indexOf('data-') > -1) {
-            temp[element.attributes[i].nodeName.slice(5)] = element.attributes[i].nodeValue;
+        return name ? element.dataset[name] : element.dataset;
+    } else {
+        let temp = {};
+        for (let i = 0, len = element.attributes.length; i < len; i += 1) {
+            if (element.attributes[i].nodeName.indexOf('data-') > -1) {
+                temp[element.attributes[i].nodeName.slice(5)] = element.attributes[i].nodeValue;
+            }
         }
+        return name ? temp[hyphenate(name)] : temp;
     }
-    return temp;
 }
 
 export function setData(element, name, data) {
-    if (isObject(data)) {
-        for (let prop in data) {
-            if (Object.prototype.hasOwnProperty.call(data, prop)) {
-                element.dataset[prop] = data[prop];
-            }
-        }
-    } else if (element.dataset) {
+    if (element.dataset) {
         element.dataset[name] = data;
     } else {
         element.setAttribute('data-' + hyphenate(name), data);

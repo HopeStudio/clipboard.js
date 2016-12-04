@@ -1,6 +1,6 @@
 /*
  Rollup.js v0.0.1
- Sun Dec 04 2016 20:15:28 GMT+0800 (CST)
+ Sun Dec 04 2016 20:27:24 GMT+0800 (CST)
 
  https://github.com/yangfch3/clipboard.js
 
@@ -11,16 +11,6 @@
   typeof define === 'function' && define.amd ? define(factory) :
   (global.Clipboard = factory());
 }(this, (function () { 'use strict';
-
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-  };
-
-
-
-
 
   var asyncGenerator = function () {
     function AwaitValue(value) {
@@ -228,14 +218,7 @@
       return Array.isArray(input);
   }
 
-  function isObject(input) {
-      if (input === null) {
-          return false;
-      } else if (typeof input === 'function' || (typeof input === 'undefined' ? 'undefined' : _typeof(input)) === 'object') {
-          return true;
-      }
-      return undefined;
-  }
+
 
   function toArray$$1(obj, offset) {
       offset = offset >= 0 ? offset : 0;
@@ -265,32 +248,21 @@
   }
 
   function getData(element, name) {
-      if (name) {
-          if (element.dataset) {
-              return element.dataset[name];
-          }
-          return element.getAttribute(name);
-      }
       if (element.dataset) {
-          return element.dataset;
-      }
-      var temp = {};
-      for (var i = 0, len = element.attributes.length; i < len; i += 1) {
-          if (element.attributes[i].nodeName.indexOf('data-') > -1) {
-              temp[element.attributes[i].nodeName.slice(5)] = element.attributes[i].nodeValue;
+          return name ? element.dataset[name] : element.dataset;
+      } else {
+          var temp = {};
+          for (var i = 0, len = element.attributes.length; i < len; i += 1) {
+              if (element.attributes[i].nodeName.indexOf('data-') > -1) {
+                  temp[element.attributes[i].nodeName.slice(5)] = element.attributes[i].nodeValue;
+              }
           }
+          return name ? temp[hyphenate(name)] : temp;
       }
-      return temp;
   }
 
   function setData(element, name, data) {
-      if (isObject(data)) {
-          for (var prop in data) {
-              if (Object.prototype.hasOwnProperty.call(data, prop)) {
-                  element.dataset[prop] = data[prop];
-              }
-          }
-      } else if (element.dataset) {
+      if (element.dataset) {
           element.dataset[name] = data;
       } else {
           element.setAttribute('data-' + hyphenate(name), data);
