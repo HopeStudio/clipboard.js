@@ -1,4 +1,4 @@
-import { isString, contain, inheritPrototype } from './lib/utils';
+import { isString, contain, inheritPrototype, toArray } from './lib/utils';
 import Publisher from './lib/observer';
 import fakeInput from './lib/fakeInput';
 
@@ -101,7 +101,7 @@ function Clipboard(ele) {
 Clipboard.ver = Clipboard.version = VERSION;
 
 Clipboard.init = function (className) {
-    let btns = [...document.querySelectorAll(`.${className}`)];
+    let btns = toArray(document.querySelectorAll(`.${className}`));
 
     for (let i = 0, len = btns.length; i < len; i++) {
         /* eslint-disable no-new */

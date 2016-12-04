@@ -16,8 +16,6 @@ var _fakeInput2 = _interopRequireDefault(_fakeInput);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 // 环境分支示例代码
 // if (process.env.NODE_ENV === 'production') {
 //     /* eslint-disable no-console */
@@ -120,7 +118,7 @@ function Clipboard(ele) {
 Clipboard.ver = Clipboard.version = VERSION;
 
 Clipboard.init = function (className) {
-    var btns = [].concat(_toConsumableArray(document.querySelectorAll('.' + className)));
+    var btns = (0, _utils.toArray)(document.querySelectorAll('.' + className));
 
     for (var i = 0, len = btns.length; i < len; i++) {
         /* eslint-disable no-new */

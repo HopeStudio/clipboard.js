@@ -33,29 +33,29 @@ export function inheritPrototype(subType, superType) {
     subType.prototype = middleObj;
 }
 
-export function toggleClass(element, toToggleClass) {
-    if (element.classList) {
-        element.classList.toggle(toToggleClass);
-    } else {
-        let classNames = element.className.split(/\s+/);
-
-        let pos = -1,
-            i,
-            len = classNames.length;
-
-        for (i = 0; i < len; i++ ) {
-            if (classNames[i] == toToggleClass) {
-                pos = i;
-                break;
-            }
-        }
-
-        if (pos == -1) {
-            classNames.push(toToggleClass);
-        } else {
-            classNames.splice(i, 1);
-        }
-
-        element.className = classNames.join(' ');
-    }
-}
+// export function toggleClass(element, toToggleClass) {
+//     if (element.classList) {
+//         element.classList.toggle(toToggleClass);
+//     } else {
+//         let classNames = element.className.split(/\s+/);
+//
+//         let pos = -1,
+//             i,
+//             len = classNames.length;
+//
+//         for (i = 0; i < len; i++ ) {
+//             if (classNames[i] == toToggleClass) {
+//                 pos = i;
+//                 break;
+//             }
+//         }
+//
+//         if (pos == -1) {
+//             classNames.push(toToggleClass);
+//         } else {
+//             classNames.splice(i, 1);
+//         }
+//
+//         element.className = classNames.join(' ');
+//     }
+// }

@@ -1,6 +1,6 @@
 /*
  Rollup.js v0.0.1
- Sat Nov 05 2016 10:48:33 GMT+0800 (CST)
+ Sun Dec 04 2016 19:34:19 GMT+0800 (CST)
 
  https://github.com/yangfch3/clipboard.js
 
@@ -24,7 +24,15 @@ function isArray(input) {
     return Array.isArray(input);
 }
 
+function toArray(obj, offset) {
+    offset = offset >= 0 ? offset : 0;
+    if (Array.from) {
+        // Array.from: convert an obj or an array-like obj to an array
+        return Array.prototype.slice.call(Array.from(obj), offset);
+    }
 
+    return Array.prototype.slice.call(obj, offset);
+}
 
 function inheritPrototype(subType, superType) {
     function F() {}
@@ -33,6 +41,33 @@ function inheritPrototype(subType, superType) {
     middleObj.constructor = subType;
     subType.prototype = middleObj;
 }
+
+// export function toggleClass(element, toToggleClass) {
+//     if (element.classList) {
+//         element.classList.toggle(toToggleClass);
+//     } else {
+//         let classNames = element.className.split(/\s+/);
+//
+//         let pos = -1,
+//             i,
+//             len = classNames.length;
+//
+//         for (i = 0; i < len; i++ ) {
+//             if (classNames[i] == toToggleClass) {
+//                 pos = i;
+//                 break;
+//             }
+//         }
+//
+//         if (pos == -1) {
+//             classNames.push(toToggleClass);
+//         } else {
+//             classNames.splice(i, 1);
+//         }
+//
+//         element.className = classNames.join(' ');
+//     }
+// }
 
 function Observer(obj) {
     // 作用域安全的构造函数
@@ -133,220 +168,6 @@ fakeInput.style.left = '-9999px';
 fakeInput.style.width = '1px';
 fakeInput.style.height = '1px';
 document.body.appendChild(fakeInput);
-
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
-
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var set = function set(object, property, value, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent !== null) {
-      set(parent, property, value, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    desc.value = value;
-  } else {
-    var setter = desc.set;
-
-    if (setter !== undefined) {
-      setter.call(receiver, value);
-    }
-  }
-
-  return value;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var toConsumableArray = function (arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  } else {
-    return Array.from(arr);
-  }
-};
 
 // 环境分支示例代码
 // if ("development" === 'production') {
@@ -450,7 +271,7 @@ function Clipboard(ele) {
 Clipboard.ver = Clipboard.version = VERSION;
 
 Clipboard.init = function (className) {
-    var btns = [].concat(toConsumableArray(document.querySelectorAll('.' + className)));
+    var btns = toArray(document.querySelectorAll('.' + className));
 
     for (var i = 0, len = btns.length; i < len; i++) {
         /* eslint-disable no-new */
