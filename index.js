@@ -90,12 +90,12 @@ function Clipboard(ele) {
     if ((0, _utils.getData)(trigger, 'registered')) {
         return _clipboardList[_triggers.indexOf(trigger)];
     }
-    var target = document.querySelector((0, _utils.getData)(trigger, 'clipboardTarget'));
+    var target = document.querySelector((0, _utils.getData)(trigger, 'clipboard-target'));
     var action = void 0,
         type = void 0;
 
     if (/input|textarea/g.test(target.nodeName.toLowerCase())) {
-        action = (0, _utils.getData)(trigger, 'clipboardAction') === 'cut' ? 'cut' : 'copy';
+        action = (0, _utils.getData)(trigger, 'clipboard-action') === 'cut' ? 'cut' : 'copy';
         type = 1;
     } else {
         action = 'copy';

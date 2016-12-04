@@ -1,6 +1,6 @@
 /*
  Rollup.js v0.0.1
- Sun Dec 04 2016 20:02:17 GMT+0800 (CST)
+ Sun Dec 04 2016 20:11:50 GMT+0800 (CST)
 
  https://github.com/yangfch3/clipboard.js
 
@@ -467,12 +467,12 @@ function Clipboard(ele) {
     if (getData(trigger, 'registered')) {
         return _clipboardList[_triggers.indexOf(trigger)];
     }
-    var target = document.querySelector(getData(trigger, 'clipboardTarget'));
+    var target = document.querySelector(getData(trigger, 'clipboard-target'));
     var action = void 0,
         type = void 0;
 
     if (/input|textarea/g.test(target.nodeName.toLowerCase())) {
-        action = getData(trigger, 'clipboardAction') === 'cut' ? 'cut' : 'copy';
+        action = getData(trigger, 'clipboard-action') === 'cut' ? 'cut' : 'copy';
         type = 1;
     } else {
         action = 'copy';

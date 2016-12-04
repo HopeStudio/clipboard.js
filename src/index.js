@@ -1,4 +1,4 @@
-import { isString, contain, inheritPrototype, toArray, getData, setData, getElement } from './lib/utils';
+import { isString, contain, inheritPrototype, toArray, getData, setData } from './lib/utils';
 import Publisher from './lib/observer';
 import fakeInput from './lib/fakeInput';
 
