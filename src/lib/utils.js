@@ -84,3 +84,25 @@ export function setData(element, name, data) {
         element.setAttribute('data-' + hyphenate(name), data);
     }
 }
+
+export function getElement(selector, parentElement) {
+    if (!parentElement) {
+        parentElement = document;
+    }
+    let isId = (trim(selector).indexOf('#') === 0),
+        isClass = (trim(selector).indexOf('.') === 0);
+    switch (true) {
+        case isId:
+            return parentElement.querySelector ?
+                parentElement.querySelector(selector) :
+                parentElement.getElementById(selector);
+        case isClass:
+            return parentElement.querySelectorAll ?
+                parentElement.querySelectorAll(selector) :
+                parentElement.getElementsByClassName(selector);
+        default:
+            return parentElement.querySelectorAll ?
+                parentElement.querySelectorAll(selector) :
+                parentElement.getElementsByTagName(selector);
+    }
+}
