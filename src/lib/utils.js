@@ -14,6 +14,15 @@ export function isArray(input) {
     return Array.isArray(input);
 }
 
+export function isObject(input) {
+    if (input === null) {
+        return false;
+    } else if (typeof input === 'function' || typeof input === 'object') {
+        return true;
+    }
+    return undefined;
+}
+
 export function toArray(obj, offset) {
     offset = offset >= 0 ? offset : 0;
     if (Array.from) {
@@ -33,29 +42,45 @@ export function inheritPrototype(subType, superType) {
     subType.prototype = middleObj;
 }
 
-// export function toggleClass(element, toToggleClass) {
-//     if (element.classList) {
-//         element.classList.toggle(toToggleClass);
-//     } else {
-//         let classNames = element.className.split(/\s+/);
-//
-//         let pos = -1,
-//             i,
-//             len = classNames.length;
-//
-//         for (i = 0; i < len; i++ ) {
-//             if (classNames[i] == toToggleClass) {
-//                 pos = i;
-//                 break;
-//             }
-//         }
-//
-//         if (pos == -1) {
-//             classNames.push(toToggleClass);
-//         } else {
-//             classNames.splice(i, 1);
-//         }
-//
-//         element.className = classNames.join(' ');
-//     }
-// }
+function hyphenate(str) {
+    if (!isString(str)) {
+        return false;
+    }
+    const REGEXP_HYPHENATE = /([a-z\d])([A-Z])/g;
+    str = str.replace(REGEXP_HYPHENATE, '$1-$2').toLowerCase();
+    return str;
+}
+
+
+export function getData(element, name) {
+    if (name) {
+        if (element.dataset) {
+            return element.dataset[name];
+        }
+        return element.getAttribute(name);
+    }
+    if (element.dataset) {
+        return element.dataset;
+    }
+    let temp = {};
+    for (let i = 0, len = element.attributes.length; i < len; i += 1) {
+        if (element.attributes[i].nodeName.indexOf('data-') > -1) {
+            temp[element.attributes[i].nodeName.slice(5)] = element.attributes[i].nodeValue;
+        }
+    }
+    return temp;
+}
+
+export function setData(element, name, data) {
+    if (isObject(data)) {
+        for (let prop in data) {
+            if (Object.prototype.hasOwnProperty.call(data, prop)) {
+                element.dataset[prop] = data[prop];
+            }
+        }
+    } else if (element.dataset) {
+        element.dataset[name] = data;
+    } else {
+        element.setAttribute('data-' + hyphenate(name), data);
+    }
+}

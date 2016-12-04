@@ -1,4 +1,4 @@
-import { isString, contain, inheritPrototype, toArray } from './lib/utils';
+import { isString, contain, inheritPrototype, toArray, getData, setData } from './lib/utils';
 import Publisher from './lib/observer';
 import fakeInput from './lib/fakeInput';
 
@@ -71,14 +71,14 @@ function Clipboard(ele) {
     let trigger = isString(ele) ? document.querySelector(ele) : ele;
 
     // 按钮已注册过时
-    if (trigger.dataset['registered']) {
+    if (getData(trigger, 'registered')) {
         return _clipboardList[_triggers.indexOf(trigger)];
     }
-    let target = document.querySelector(trigger.dataset['clipboardTarget']);
+    let target = document.querySelector(getData(trigger, 'clipboardTarget'));
     let action, type;
 
     if (/input|textarea/g.test(target.nodeName.toLowerCase())) {
-        action = trigger.dataset['clipboardAction'] === 'cut' ? 'cut' : 'copy';
+        action = getData(trigger, 'clipboardAction') === 'cut' ? 'cut' : 'copy';
         type = 1;
     } else {
         action = 'copy';
@@ -93,7 +93,7 @@ function Clipboard(ele) {
     _clipboardList.push(this);
     _triggers.push(trigger);
 
-    trigger.dataset['registered'] = true;
+    setData(trigger, 'registered', 'true');
 
     return this;
 }

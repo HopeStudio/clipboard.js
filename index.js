@@ -87,15 +87,15 @@ function Clipboard(ele) {
     var trigger = (0, _utils.isString)(ele) ? document.querySelector(ele) : ele;
 
     // 按钮已注册过时
-    if (trigger.dataset['registered']) {
+    if ((0, _utils.getData)(trigger, 'registered')) {
         return _clipboardList[_triggers.indexOf(trigger)];
     }
-    var target = document.querySelector(trigger.dataset['clipboardTarget']);
+    var target = document.querySelector((0, _utils.getData)(trigger, 'clipboardTarget'));
     var action = void 0,
         type = void 0;
 
     if (/input|textarea/g.test(target.nodeName.toLowerCase())) {
-        action = trigger.dataset['clipboardAction'] === 'cut' ? 'cut' : 'copy';
+        action = (0, _utils.getData)(trigger, 'clipboardAction') === 'cut' ? 'cut' : 'copy';
         type = 1;
     } else {
         action = 'copy';
@@ -110,7 +110,7 @@ function Clipboard(ele) {
     _clipboardList.push(this);
     _triggers.push(trigger);
 
-    trigger.dataset['registered'] = true;
+    (0, _utils.setData)(trigger, 'registered', 'true');
 
     return this;
 }
