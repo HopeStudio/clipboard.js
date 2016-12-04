@@ -1,6 +1,6 @@
 /*
  Rollup.js v0.0.1
- Sun Dec 04 2016 20:11:50 GMT+0800 (CST)
+ Sun Dec 04 2016 20:15:28 GMT+0800 (CST)
 
  https://github.com/yangfch3/clipboard.js
 
