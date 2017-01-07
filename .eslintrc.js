@@ -6,10 +6,11 @@ module.exports = {
     },
     "env": {
         "es6": true,
-        "browser": true,
         "node": true,
+        "browser": true,
         "mocha": true,
-        "amd": true
+        "amd": true,
+        "jquery": true
     },
     "plugins": [
         "standard"

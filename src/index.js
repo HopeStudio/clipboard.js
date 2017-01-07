@@ -2,17 +2,6 @@ import { isString, contain, inheritPrototype, toArray, getData, setData } from '
 import Publisher from './lib/observer';
 import fakeInput from './lib/fakeInput';
 
-// 环境分支示例代码
-// if (process.env.NODE_ENV === 'production') {
-//     /* eslint-disable no-console */
-//     console.log('production');
-//     /* eslint-enable no-console */
-// } else {
-//     /* eslint-disable no-console */
-//     console.log('not production');
-//     /* eslint-enable no-console */
-// }
-
 const VERSION = '<@VERSION@>';
 
 let _clipboardList = [];

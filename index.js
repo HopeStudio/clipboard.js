@@ -16,17 +16,6 @@ var _fakeInput2 = _interopRequireDefault(_fakeInput);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// 环境分支示例代码
-// if (process.env.NODE_ENV === 'production') {
-//     /* eslint-disable no-console */
-//     console.log('production');
-//     /* eslint-enable no-console */
-// } else {
-//     /* eslint-disable no-console */
-//     console.log('not production');
-//     /* eslint-enable no-console */
-// }
-
 var VERSION = '<@VERSION@>';
 
 var _clipboardList = [];
